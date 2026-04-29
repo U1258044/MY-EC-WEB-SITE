@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>尖山米粉 | Jianshan Noodles - 陽光與風的職人專賣店</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Noto+Sans+TC:wght@300;400;500;700&family=Inter:wght@400;600&display=swap');
+        
+        :root {
+            --gold: #d4af37;
+            --dark: #0a0a0a;
+            --bg-subtle: #141414;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Noto Sans TC', 'Inter', sans-serif;
+            background-color: var(--dark);
+            color: #e5e5e5;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, .serif {
+            font-family: 'Noto Serif TC', serif;
+        }
+
+        .gold-text { color: var(--gold); }
+        .gold-bg { background-color: var(--gold); }
+        .border-gold { border-color: var(--gold); }
+
+        /* 動態進入效果 */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 導覽列毛玻璃 */
+        .glass-nav {
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        /* 圖片縮放效果 */
+        .img-reveal {
+            overflow: hidden;
+            position: relative;
+        }
+        .img-reveal img {
+            transition: transform 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .img-reveal:hover img {
+            transform: scale(1.08);
+        }
+
+        /* 購物車側滑欄 */
+        #cart-panel {
+            transform: translateX(100%);
+            transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+        #cart-panel.open {
+            transform: translateX(0);
+        }
+
+        /* 品質方塊圖樣式 */
+        .square { width: 10px; height: 10px; border-radius: 1px; flex-shrink: 0; }
+        .lvl-0 { background-color: #1a1a1a; } 
+        .lvl-1 { background-color: #2d2d0a; } 
+        .lvl-2 { background-color: #4d4d14; } 
+        .lvl-3 { background-color: #8a8a22; } 
+        .lvl-4 { background-color: var(--gold); }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        
+        .overlay-gradient {
+            background: linear-gradient(to bottom, rgba(10,10,10,0) 0%, rgba(10,10,10,0.9) 100%);
+        }
+
+        .product-hover {
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 100%);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 導覽列 -->
+    <header class="fixed top-0 w-full z-50 glass-nav border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-xl font-bold tracking-[0.3em] text-white cursor-pointer" onclick="window.scrollTo(0,0)">
+                尖山米粉 <span class="text-[10px] block font-light gold-text tracking-normal uppercase">Jianshan Noodles</span>
+            </div>
+            <nav class="hidden md:flex gap-10 text-[10px] tracking-[0.25em] uppercase font-bold text-gray-400">
+                <a href="#about" class="hover:text-gold transition-colors">工藝理念</a>
+                <a href="#origin" class="hover:text-gold transition-colors">素材溯源</a>
+                <a href="#products" class="hover:text-gold transition-colors">職人選品</a>
+                <a href="#recipe" class="hover:text-gold transition-colors">美味食譜</a>
+            </nav>
+            <div class="flex items-center gap-6">
+                <button onclick="toggleCart()" class="relative group p-2">
+                    <span class="text-xl text-white">🛒</span>
+                    <span id="cart-count" class="absolute top-0 right-0 gold-bg text-black text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-lg">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 首頁 Hero Section (使用高品質米粉捆圖) -->
+    <section class="relative h-screen flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1626700051175-656fc7ec33eb?auto=format&fit=crop&q=80&w=2000" alt="乾燥米粉捆" class="w-full h-full object-cover opacity-60">
+            <div class="absolute inset-0 bg-gradient-to-b from-black/70 via-transparent to-black z-10"></div>
+        </div>
+        
+        <div class="relative z-20 text-center px-6 max-w-4xl">
+            <div class="mb-8 inline-block py-2 px-6 border border-gold/40 rounded-full fade-in">
+                <span class="text-gold text-[11px] tracking-[0.5em] uppercase font-bold">Traditional Craft Since 1920</span>
+            </div>
+            <h1 class="text-6xl md:text-[9rem] font-bold text-white mb-10 tracking-tighter leading-none fade-in">
+                白色的<br><span class="gold-text italic serif">詩篇</span>
+            </h1>
+            <p class="max-w-2xl mx-auto text-gray-300 leading-loose mb-14 text-sm md:text-xl font-light fade-in">
+                在苗栗頭份的寒風與烈日下，米粉學會了堅韌與甘甜。<br>三代職人守候，只為那一抹被陽光親吻過的溫潤滋味。
+            </p>
+            <div class="flex flex-col sm:flex-row gap-8 justify-center items-center fade-in">
+                <a href="#products" class="px-16 py-6 gold-bg text-black font-bold text-xs tracking-[0.3em] hover:bg-white transition-all shadow-2xl">
+                    立即探索米粉 (Shop)
+                </a>
+                <a href="#about" class="text-white text-xs tracking-[0.2em] font-bold border-b border-white/30 pb-2 hover:text-gold hover:border-gold transition-all">
+                    了解職人工藝
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 品牌理念區塊 (使用曬粉場實景圖) -->
+    <section id="about" class="py-32 px-6 bg-[#080808]">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
+            <div class="space-y-12 fade-in">
+                <div class="space-y-6">
+                    <p class="gold-text text-xs tracking-[0.4em] font-bold uppercase">Our Philosophy</p>
+                    <h2 class="text-5xl font-bold text-white leading-[1.1] serif">讓時間慢下來，<br>米粉才會有生命。</h2>
+                </div>
+                <p class="text-gray-400 text-lg leading-loose font-light">
+                    當全世界都在追求效率，我們依然選擇在凌晨三點起灶。機械可以模仿形狀，卻無法模仿風乾時產生的韌度。每一根細如絲、白如玉的尖山米粉，都在自然的律動中緩緩熟成，鎖住米糧最原始的甘香。
+                </p>
+                <div class="flex gap-16">
+                    <div>
+                        <span class="text-4xl font-bold text-white block mb-2">100%</span>
+                        <span class="text-xs text-gray-600 tracking-widest uppercase">在來純米</span>
+                    </div>
+                    <div>
+                        <span class="text-4xl font-bold text-white block mb-2">72 hr</span>
+                        <span class="text-xs text-gray-600 tracking-widest uppercase">三日風乾</span>
+                    </div>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-6 fade-in">
+                <div class="img-reveal aspect-[3/4] bg-white/5">
+                    <!-- 傳統曝曬米粉場景圖 -->
+                    <img src="https://images.unsplash.com/photo-1569058242252-62324e6ed5a6?auto=format&fit=crop&q=80&w=800" alt="傳統米粉曝曬圖" class="w-full h-full object-cover opacity-80">
+                </div>
+                <div class="img-reveal aspect-[3/4] bg-white/5 mt-16">
+                    <!-- 原料米圖 -->
+                    <img src="https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&q=80&w=800" alt="在來米原料" class="w-full h-full object-cover opacity-80">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 素材溯源 -->
+    <section id="origin" class="py-32 bg-[#111]">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-24 fade-in">
+                <p class="gold-text text-xs tracking-[0.4em] font-bold mb-6 uppercase">The Ingredients</p>
+                <h2 class="text-4xl md:text-6xl font-bold text-white serif tracking-tight">純淨，是美味的唯一前提</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <div class="fade-in bg-[#0c0c0c] p-10 border border-white/5 hover:border-gold/30 transition-all">
+                    <div class="text-3xl mb-8">🌾</div>
+                    <h3 class="text-white font-bold text-xl mb-4">嚴選在來米</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">僅選用苗栗在地農契之兩年老米，黏性低、米質穩定，呈現最清爽的米粉質地。</p>
+                </div>
+                <div class="fade-in bg-[#0c0c0c] p-10 border border-white/5 hover:border-gold/30 transition-all" style="transition-delay: 100ms;">
+                    <div class="text-3xl mb-8">💧</div>
+                    <h3 class="text-white font-bold text-xl mb-4">中港溪水源</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">汲取溪流上游純淨水源，洗去米糧雜質，保留最透徹的米香底蘊。</p>
+                </div>
+                <div class="fade-in bg-[#0c0c0c] p-10 border border-white/5 hover:border-gold/30 transition-all" style="transition-delay: 200ms;">
+                    <div class="text-3xl mb-8">🍂</div>
+                    <h3 class="text-white font-bold text-xl mb-4">自然九降風</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">每年秋季乾燥寒冷的東北季風，是上天賦予米粉最佳的天然脫水工序。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 產品選購區 (使用實體米粉商品感圖) -->
+    <section id="products" class="py-32 px-6 bg-[#080808]">
+        <div class="max-w-7xl mx-auto mb-20 flex justify-between items-end">
+            <div class="fade-in">
+                <p class="gold-text text-xs tracking-[0.4em] font-bold mb-4 uppercase">Product Selection</p>
+                <h2 class="text-4xl md:text-5xl font-bold text-white serif">職人選品：三代傳承</h2>
+            </div>
+            <div class="hidden md:block">
+                <p class="text-gray-600 text-[10px] tracking-widest uppercase italic font-bold">Premium Rice Vermicelli</p>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-16">
+            <!-- 產品 1 (乾燥米粉捆) -->
+            <div class="group fade-in">
+                <div class="img-reveal aspect-[4/5] bg-neutral-900 mb-8 relative">
+                    <img src="https://images.unsplash.com/photo-1512058560566-d352b216954e?auto=format&fit=crop&q=80&w=800" alt="經典米粉" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 product-hover opacity-0 group-hover:opacity-100 transition-all flex flex-col items-center justify-end p-10 text-center">
+                        <p class="text-white text-xs mb-8 leading-relaxed font-light">
+                            採用 100% 在來米研磨，三日陽光風乾。口感分明，是台式炒米粉的首選。
+                        </p>
+                        <button onclick="addToCart('經典手工米粉', 150)" class="w-full py-4 gold-bg text-black text-[10px] font-bold tracking-[0.3em] transform translate-y-4 group-hover:translate-y-0 transition-all shadow-xl">ADD TO CART</button>
+                    </div>
+                </div>
+                <div class="flex justify-between items-end px-2">
+                    <div class="space-y-1 text-left">
+                        <h4 class="text-white text-lg font-bold tracking-wide">經典手工米粉</h4>
+                        <p class="text-[10px] text-gray-600 tracking-widest uppercase font-bold">Classic Handmade</p>
+                    </div>
+                    <span class="gold-text font-bold text-xl font-serif">NT$ 150</span>
+                </div>
+            </div>
+
+            <!-- 產品 2 (禮盒意象圖) -->
+            <div class="group fade-in" style="transition-delay: 100ms;">
+                <div class="img-reveal aspect-[4/5] bg-neutral-900 mb-8 relative border border-gold/10">
+                    <img src="https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&q=80&w=800" alt="職人禮盒" class="w-full h-full object-cover opacity-90">
+                    <div class="absolute inset-0 product-hover opacity-0 group-hover:opacity-100 transition-all flex flex-col items-center justify-end p-10 text-center">
+                        <p class="text-white text-xs mb-8 leading-relaxed font-light">
+                            內含極細炊粉與職人祕製紅蔥油，節慶贈禮的最體面選擇。
+                        </p>
+                        <button onclick="addToCart('2024 職人禮盒', 880)" class="w-full py-4 gold-bg text-black text-[10px] font-bold tracking-[0.3em] transform translate-y-4 group-hover:translate-y-0 transition-all shadow-xl">ADD TO CART</button>
+                    </div>
+                </div>
+                <div class="flex justify-between items-end px-2">
+                    <div class="space-y-1 text-left">
+                        <h4 class="text-white text-lg font-bold tracking-wide">2024 職人限定禮盒</h4>
+                        <p class="text-[10px] text-gold tracking-widest uppercase font-bold italic">Seasonal Set</p>
+                    </div>
+                    <span class="gold-text font-bold text-xl font-serif">NT$ 880</span>
+                </div>
+            </div>
+
+            <!-- 產品 3 (辣味米粉意象) -->
+            <div class="group fade-in" style="transition-delay: 200ms;">
+                <div class="img-reveal aspect-[4/5] bg-neutral-900 mb-8 relative">
+                    <img src="https://images.unsplash.com/photo-1552611052-33e04de081de?auto=format&fit=crop&q=80&w=800" alt="香辣米粉" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 product-hover opacity-0 group-hover:opacity-100 transition-all flex flex-col items-center justify-end p-10 text-center">
+                        <p class="text-white text-xs mb-8 leading-relaxed font-light">
+                            與在地辣醬名店合作。將風乾米粉的嚼勁與秘製辛香醬完美結合。
+                        </p>
+                        <button onclick="addToCart('香辣乾拌米粉', 180)" class="w-full py-4 gold-bg text-black text-[10px] font-bold tracking-[0.3em] transform translate-y-4 group-hover:translate-y-0 transition-all shadow-xl">ADD TO CART</button>
+                    </div>
+                </div>
+                <div class="flex justify-between items-end px-2">
+                    <div class="space-y-1 text-left">
+                        <h4 class="text-white text-lg font-bold tracking-wide">香辣乾拌米粉</h4>
+                        <p class="text-[10px] text-gray-600 tracking-widest uppercase font-bold">Spicy Vermicelli</p>
+                    </div>
+                    <span class="gold-text font-bold text-xl font-serif">NT$ 180</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 職人美味食譜區 (使用高品質炒米粉實圖) -->
+    <section id="recipe" class="py-32 px-6 bg-black">
+        <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-24 items-center">
+            <div class="w-full lg:w-3/5 fade-in img-reveal group relative">
+                <!-- 經典炒米粉料理圖 -->
+                <img src="https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?auto=format&fit=crop&q=80&w=1200" alt="經典炒米粉料理" class="w-full aspect-video object-cover rounded-sm shadow-3xl opacity-80 group-hover:opacity-100 transition-all">
+                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all bg-black/30 pointer-events-none">
+                    <span class="text-white border border-white px-8 py-3 text-[10px] tracking-widest font-bold uppercase">Discover Recipe</span>
+                </div>
+            </div>
+            <div class="w-full lg:w-2/5 space-y-10 fade-in text-left">
+                <div class="space-y-4">
+                    <p class="gold-text text-xs tracking-[0.4em] font-bold uppercase">The Master Recipe</p>
+                    <h2 class="text-4xl font-bold text-white serif leading-tight">如何炒出一盤<br>有「鑊氣」的尖山米粉？</h2>
+                </div>
+                <div class="space-y-8">
+                    <div class="flex gap-6 items-start">
+                        <span class="gold-text font-serif italic text-2xl">I.</span>
+                        <p class="text-gray-400 text-sm leading-loose font-light">沖水三秒，靜置五分。米粉不需久泡，利用餘溫悶軟，方能保持中心驚人的韌度。</p>
+                    </div>
+                    <div class="flex gap-6 items-start">
+                        <span class="gold-text font-serif italic text-2xl">II.</span>
+                        <p class="text-gray-400 text-sm leading-loose font-light">煸香肉絲、紅蔥頭與蝦米。加入足量高湯，滾開後才下米粉，讓米粉充分吸飽精華原味。</p>
+                    </div>
+                </div>
+                <div class="pt-4">
+                    <button class="px-12 py-5 border border-gold/40 text-gold text-[10px] font-bold tracking-[0.4em] hover:bg-gold hover:text-black transition-all shadow-lg uppercase">View Full Recipe</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 品質監測日誌 -->
+    <section id="quality" class="py-32 px-6 bg-[#080808]">
+        <div class="max-w-5xl mx-auto border border-white/5 bg-[#0c0c0c] p-12 md:p-20 relative overflow-hidden">
+            <div class="relative z-10 flex flex-col md:flex-row justify-between items-end mb-16 gap-10">
+                <div class="text-left">
+                    <p class="gold-text text-xs tracking-[0.3em] font-bold mb-4 uppercase">Batch Log #2024</p>
+                    <h2 class="text-4xl font-bold text-white serif">數據透明：環境品質紀錄</h2>
+                </div>
+                <div class="text-right">
+                    <div class="flex items-center gap-3 mb-2 justify-end">
+                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                        <span class="text-white font-mono text-lg" id="temp-display-2">24.5°C / 42% Humid</span>
+                    </div>
+                    <p class="text-[10px] text-gray-600 tracking-widest font-bold uppercase">頭份曬粉基地即時數據</p>
+                </div>
+            </div>
+            
+            <div class="flex gap-1.5 overflow-x-auto pb-6 no-scrollbar" id="grid-container">
+                <!-- 由 JavaScript 動態生成 -->
+            </div>
+            <div class="flex justify-between items-center mt-10 pt-8 border-t border-white/5">
+                <p class="text-[10px] text-gray-600 tracking-widest font-bold uppercase max-w-sm text-left">
+                    註：方塊顏色越深代表當日日照與風力達到最佳等級，米粉熟成度極佳。
+                </p>
+                <div class="flex items-center gap-2 text-[9px] text-gray-500 font-bold uppercase">
+                    Min <div class="square lvl-0"></div><div class="square lvl-1"></div><div class="square lvl-2"></div><div class="square lvl-3"></div><div class="square lvl-4"></div> Max
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 頁尾 -->
+    <footer class="py-24 border-t border-white/5 px-6 bg-black">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-20 text-sm">
+            <div class="md:col-span-2 space-y-10 text-left">
+                <div class="text-3xl font-bold text-white tracking-[0.3em] uppercase">
+                    尖山米粉 <span class="gold-text">Jianshan</span>
+                </div>
+                <p class="text-gray-500 max-w-sm leading-relaxed font-light">
+                    這不是大工廠的批量生產，而是每一綹都帶有風和陽光溫度的職人傑作。感謝您支持台灣傳統產業的堅持。
+                </p>
+                <div class="flex gap-10 text-[10px] font-bold tracking-[0.3em] text-white/40">
+                    <a href="#" class="hover:text-gold transition-all">INSTAGRAM</a>
+                    <a href="#" class="hover:text-gold transition-all">FACEBOOK</a>
+                </div>
+            </div>
+            <div class="space-y-8 text-left">
+                <p class="text-white font-bold tracking-[0.4em] uppercase text-xs">Information</p>
+                <nav class="flex flex-col gap-5 text-gray-500 text-[11px] tracking-[0.2em] font-medium uppercase">
+                    <a href="#about" class="hover:text-gold">工藝傳承</a>
+                    <a href="#products" class="hover:text-gold">所有米粉</a>
+                    <a href="#recipe" class="hover:text-gold">私房食譜</a>
+                    <a href="#" class="hover:text-gold">大宗預訂</a>
+                </nav>
+            </div>
+            <div class="space-y-8 text-left">
+                <p class="text-white font-bold tracking-[0.4em] uppercase text-xs">Contact</p>
+                <div class="text-[11px] text-gray-500 leading-loose space-y-4 tracking-[0.1em] font-light">
+                    <p>苗栗縣頭份市尖山里 XXX 號</p>
+                    <p>TEL: (037) XXX - XXXX</p>
+                    <p class="text-gold font-bold">service@jianshannoodles.com</p>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto mt-24 pt-10 border-t border-white/5 text-[9px] text-gray-700 flex flex-col md:flex-row justify-between gap-6 uppercase tracking-[0.5em] font-bold">
+            <span>© 2024 Jianshan Rice Noodles Official Store.</span>
+            <div class="flex gap-10">
+                <a href="#" class="hover:text-white transition-all">Privacy Policy</a>
+                <a href="#" class="hover:text-white transition-all">Terms of Use</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 購物車側板 -->
+    <div id="cart-overlay" onclick="toggleCart()" class="fixed inset-0 bg-black/90 z-[60] hidden backdrop-blur-xl"></div>
+    <div id="cart-panel" class="fixed right-0 top-0 h-full w-full max-w-md bg-[#0e0e0e] z-[70] p-12 shadow-[0_0_100px_rgba(0,0,0,1)] border-l border-white/5 flex flex-col">
+        <div class="flex justify-between items-center mb-16">
+            <h3 class="text-3xl font-bold text-white serif italic tracking-widest">Selected</h3>
+            <button onclick="toggleCart()" class="text-xl text-white/30 hover:text-white transition-colors">✕</button>
+        </div>
+        
+        <div id="cart-items" class="flex-1 overflow-y-auto space-y-10 pr-4 no-scrollbar">
+            <p id="empty-msg" class="text-gray-700 italic text-center py-40 text-sm tracking-[0.3em] uppercase">購物籃目前空空如也</p>
+        </div>
+
+        <div class="pt-10 border-t border-white/10 mt-8">
+            <div class="flex justify-between text-2xl font-bold text-white mb-10">
+                <span class="serif italic">Total</span>
+                <span id="cart-total" class="gold-text">NT$ 0</span>
+            </div>
+            <button onclick="checkout()" class="w-full gold-bg text-black py-6 font-bold tracking-[0.4em] text-[10px] hover:bg-white transition-all uppercase shadow-2xl transform active:scale-95">
+                進行安全結帳 (Checkout)
+            </button>
+        </div>
+    </div>
+
+    <!-- 加入購物車提示 (Toast) -->
+    <div id="toast" class="fixed bottom-12 left-1/2 -translate-x-1/2 gold-bg text-black px-12 py-5 font-bold text-[10px] tracking-[0.4em] rounded-sm opacity-0 translate-y-10 transition-all z-[100] uppercase shadow-2xl">
+        Item Added to Selection
+    </div>
+
+    <script>
+        let cart = [];
+
+        // 初始化環境監測數據圖 (Production Graph)
+        function initGrid() {
+            const container = document.getElementById('grid-container');
+            if (!container) return;
+            container.innerHTML = '';
+            for (let i = 0; i < 45; i++) {
+                const col = document.createElement('div');
+                col.className = 'flex flex-col gap-1.5';
+                for (let j = 0; j < 7; j++) {
+                    const square = document.createElement('div');
+                    const lvl = Math.floor(Math.random() * 5);
+                    square.className = `square lvl-${lvl}`;
+                    col.appendChild(square);
+                }
+                container.appendChild(col);
+            }
+        }
+
+        function toggleCart() {
+            const panel = document.getElementById('cart-panel');
+            const overlay = document.getElementById('cart-overlay');
+            panel.classList.toggle('open');
+            overlay.classList.toggle('hidden');
+        }
+
+        function addToCart(name, price) {
+            cart.push({ name, price });
+            updateCart();
+            showToast(`已收藏：${name}`);
+        }
+
+        function updateCart() {
+            const container = document.getElementById('cart-items');
+            const emptyMsg = document.getElementById('empty-msg');
+            const count = document.getElementById('cart-count');
+            const totalDisplay = document.getElementById('cart-total');
+            
+            count.innerText = cart.length;
+            
+            if (cart.length === 0) {
+                emptyMsg.classList.remove('hidden');
+                container.innerHTML = '';
+            } else {
+                emptyMsg.classList.add('hidden');
+                container.innerHTML = cart.map((item, index) => `
+                    <div class="flex justify-between items-center border-b border-white/5 pb-8 animate-fade-in">
+                        <div class="space-y-2 text-left">
+                            <h5 class="text-white font-bold text-sm tracking-widest uppercase">${item.name}</h5>
+                            <p class="text-[10px] text-gold italic font-bold tracking-widest">AUTHENTIC - NT$ ${item.price}</p>
+                        </div>
+                        <button onclick="removeFromCart(${index})" class="text-[9px] text-gray-700 hover:text-white tracking-[0.2em] uppercase font-bold transition-colors">移除</button>
+                    </div>
+                `).join('');
+            }
+
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            totalDisplay.innerText = `NT$ ${total}`;
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.classList.remove('opacity-0', 'translate-y-10');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-10');
+                toast.classList.remove('opacity-100', 'translate-y-0');
+            }, 2500);
+        }
+
+        function checkout() {
+            if(cart.length === 0) return showToast("您的購物籃是空的");
+            alert("正在連接至安全支付模組...");
+        }
+
+        // 滾動動畫觀察器
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.15 });
+
+        window.onload = () => {
+            initGrid();
+            document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+            
+            // 環境數據模擬更新
+            setInterval(() => {
+                const tempEl = document.getElementById('temp-display-2');
+                if (tempEl) {
+                    const temp = (24 + (Math.random() * 2)).toFixed(1);
+                    const hum = (40 + Math.floor(Math.random() * 10));
+                    tempEl.innerText = `${temp}°C / ${hum}% Humid`;
+                }
+            }, 6000);
+        };
+    </script>
+</body>
+</html>
